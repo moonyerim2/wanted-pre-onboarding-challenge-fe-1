@@ -233,3 +233,6 @@
   "token": "eyJhbGciOiJIUzI1NiJ9.YXNkZkBhc2RmYXNkZi5jb20.h-oLZnV0pCeNKa_AM3ilQzerD2Uj7bKUn1xDft5DzOk"
 }
 ```
+
+## 원본 저장소
+- https://github.com/starkoora/wanted-pre-onboarding-challenge-fe-1-api
