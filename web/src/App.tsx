@@ -1,6 +1,5 @@
 import React from "react";
 import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
-import "./App.css";
 import { TodoList, Auth, Login, SignUp } from "./page";
 import { useLoginState } from "./hook/login";
 
