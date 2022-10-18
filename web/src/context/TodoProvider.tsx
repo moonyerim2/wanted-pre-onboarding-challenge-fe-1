@@ -1,6 +1,6 @@
 import React, { useReducer, createContext } from "react";
 
-interface TodoItem {
+export interface TodoItem {
   title: string;
   content: string;
   id: string;
@@ -10,12 +10,14 @@ interface TodoItem {
 
 interface ContextType {
   todos: TodoItem[];
+  setInitialTodos: (todos: TodoItem[]) => void;
   addTodo: (newTodoItem: TodoItem) => void;
   deleteTodo: (todoId: string) => void;
   updateTodo: (newTodoItem: TodoItem) => void;
 }
 
 type ActionType =
+  | { type: "SET_INITAIL_DATA"; payload: TodoItem[] }
   | {
       type: "ADD_TODO" | "UPDATE_TODO";
       payload: TodoItem;
@@ -24,6 +26,7 @@ type ActionType =
 
 const TodoContext = createContext<ContextType>({
   todos: [],
+  setInitialTodos: () => null,
   addTodo: () => null,
   deleteTodo: () => null,
   updateTodo: () => null,
@@ -34,6 +37,9 @@ function todoReducer(
   { type, payload }: ActionType
 ): TodoItem[] {
   switch (type) {
+    case "SET_INITAIL_DATA": {
+      return payload;
+    }
     case "ADD_TODO": {
       return [...todos, payload];
     }
@@ -58,6 +64,10 @@ function todoReducer(
 function TodoProvider({ children }: { children: React.ReactNode }) {
   const [todos, dispatch] = useReducer(todoReducer, []);
 
+  const setInitialTodos = (todos: TodoItem[]) => {
+    dispatch({ type: "SET_INITAIL_DATA", payload: todos });
+  };
+
   const addTodo = (newTodoItem: TodoItem) => {
     dispatch({
       type: "ADD_TODO",
@@ -74,7 +84,9 @@ function TodoProvider({ children }: { children: React.ReactNode }) {
   };
 
   return (
-    <TodoContext.Provider value={{ todos, addTodo, deleteTodo, updateTodo }}>
+    <TodoContext.Provider
+      value={{ todos, addTodo, deleteTodo, updateTodo, setInitialTodos }}
+    >
       {children}
     </TodoContext.Provider>
   );
