@@ -1,1 +1,1 @@
-export { useLoginState } from "./login";
+export { getLoginToken as useLoginState } from "../util/login";
