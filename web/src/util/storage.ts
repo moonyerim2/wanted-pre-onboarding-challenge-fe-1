@@ -1,3 +1,3 @@
 const storage = localStorage;
 
-export const getItem = (key: string) => storage.getItem(key);
+export const getStorageItem = (key: string) => storage.getItem(key);

@@ -1,10 +1,10 @@
 import React from "react";
 import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import { TodoList, Auth, Login, SignUp } from "./page";
-import { useLoginState } from "./hook/login";
+import { getLoginToken } from "./util/login";
 
 function App() {
-  const isLogin = useLoginState();
+  const isLogin = getLoginToken();
 
   return (
     <BrowserRouter>
