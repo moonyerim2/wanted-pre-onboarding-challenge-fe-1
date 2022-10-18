@@ -1,26 +1,26 @@
 import React, { useReducer, createContext } from "react";
 
 interface TodoItem {
-  id: number;
   title: string;
-  detail: string;
-  status: string;
+  content: string;
+  id: string;
+  createdAt: string;
+  updateAt: string;
 }
 
 interface ContextType {
   todos: TodoItem[];
-  addTodo: (todo: { title: string; detail: string }) => void;
-  deleteTodo: (todoId: number) => void;
-  updateTodo: (newTodo: TodoItem) => void;
+  addTodo: (newTodoItem: TodoItem) => void;
+  deleteTodo: (todoId: string) => void;
+  updateTodo: (newTodoItem: TodoItem) => void;
 }
 
 type ActionType =
   | {
-      type: "ADD_TODO";
-      payload: { title: string; detail: string };
+      type: "ADD_TODO" | "UPDATE_TODO";
+      payload: TodoItem;
     }
-  | { type: "DELETE_TODO"; payload: { id: number } }
-  | { type: "UPDATE_TODO"; payload: TodoItem };
+  | { type: "DELETE_TODO"; payload: { id: string } };
 
 const TodoContext = createContext<ContextType>({
   todos: [],
@@ -35,26 +35,17 @@ function todoReducer(
 ): TodoItem[] {
   switch (type) {
     case "ADD_TODO": {
-      const { title, detail } = payload;
-      return [
-        ...todos,
-        {
-          id: new Date().getTime(),
-          title,
-          detail,
-          status: "TODO",
-        },
-      ];
+      return [...todos, payload];
     }
     case "DELETE_TODO": {
       const { id } = payload;
       return todos.filter((todo: TodoItem) => todo.id !== id);
     }
     case "UPDATE_TODO": {
-      const { id, title, detail, status } = payload;
+      const { id } = payload;
       return todos.map((todo: TodoItem) => {
         if (todo.id === id) {
-          return { ...todo, title, detail, status };
+          return { ...todo, ...payload };
         }
         return todo;
       });
@@ -67,17 +58,14 @@ function todoReducer(
 function TodoProvider({ children }: { children: React.ReactNode }) {
   const [todos, dispatch] = useReducer(todoReducer, []);
 
-  const addTodo = ({ title, detail }: { title: string; detail: string }) => {
+  const addTodo = (newTodoItem: TodoItem) => {
     dispatch({
       type: "ADD_TODO",
-      payload: {
-        title,
-        detail,
-      },
+      payload: newTodoItem,
     });
   };
 
-  const deleteTodo = (id: number) => {
+  const deleteTodo = (id: string) => {
     dispatch({ type: "DELETE_TODO", payload: { id } });
   };
 
