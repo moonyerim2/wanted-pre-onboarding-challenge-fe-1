@@ -33,7 +33,7 @@ function TodoInput() {
 
   const onSubmit = (e: React.FormEvent<HTMLButtonElement>) => {
     e.preventDefault();
-    const options = buildOption("POST", getLoginToken(), todoTexts);
+    const options = buildOption(getLoginToken(), "POST", todoTexts);
     const data = post({ endPoint: "/todos", options });
     addTodo(data);
   };

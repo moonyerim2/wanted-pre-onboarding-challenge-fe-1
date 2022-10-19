@@ -12,7 +12,7 @@ function TodoList() {
   const { loading, responseData } = useFetch({
     baseUrl: BASE_URL,
     endPoint: "/todos",
-    options: buildOption("GET", getLoginToken()),
+    options: buildOption(getLoginToken()),
   });
 
   useEffect(() => {
@@ -21,7 +21,7 @@ function TodoList() {
     } else {
       setInitialTodos(responseData);
     }
-  }, [responseData, setInitialTodos]);
+  }, [responseData]);
 
   return (
     <>
