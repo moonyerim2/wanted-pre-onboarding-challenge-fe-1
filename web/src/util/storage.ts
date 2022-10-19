@@ -1,3 +1,8 @@
 const storage = localStorage;
 
-export const getStorageItem = (key: string) => storage.getItem(key);
+export const getStorageItem = (key: string) => {
+  const item = storage.getItem(key);
+  if (item !== null) {
+    return JSON.parse(item);
+  }
+};
