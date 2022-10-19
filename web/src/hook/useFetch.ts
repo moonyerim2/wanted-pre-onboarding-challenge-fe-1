@@ -5,7 +5,7 @@ export function useFetch({ baseUrl, options, endPoint }: UseFetchParams) {
   const [responseData, setResponseData] = useState<any>();
   const [loading, setLoading] = useState(false);
 
-  const fetchData = (url: string, method: Method, options?: RequestInit) => {
+  const fetchData = (url: string, method: string, options?: RequestInit) => {
     try {
       setLoading(true);
 
@@ -25,14 +25,19 @@ export function useFetch({ baseUrl, options, endPoint }: UseFetchParams) {
   const createUrl = (endPoint: string) => `${baseUrl}${endPoint}`;
 
   const post = ({ endPoint, options }: PostParams) => {
-    const method: Method = "POST";
+    const { headers } = options;
+    const { method }: { method: Method } = headers;
+
+    if (!method) {
+      throw "HTTP method를 입력하세요.";
+    }
     const url = createUrl(endPoint);
     fetchData(url, method, options);
     return responseData;
   };
 
   const get = ({ endPoint, options }: GetParams) => {
-    const method: Method = "GET";
+    const method = "GET";
     const url = createUrl(endPoint);
     if (options) {
       fetchData(url, method, options);

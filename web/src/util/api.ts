@@ -1,22 +1,20 @@
 import { Method } from "../type";
 
-export const buildHeader = (method: Method, token: string): HeadersInit => {
-  const headers = [method, token].reduce((headers, headerProp) => {
-    if (headerProp === "POST" || headerProp === "DELETE") {
-      return { ...headers, ["Content-Type"]: "application/json" };
-    }
-    return { ...headers, Authorization: token };
-  }, {});
-  return headers;
+export const buildHeader = (token: string, method?: Method) => {
+  const headers: { [key: string]: string } = {
+    Authorization: token,
+  };
+
+  if (method === "GET" || method === undefined) {
+    return headers;
+  }
+
+  return { ...headers, method, ["Content-Type"]: "application/json" };
 };
 
-export const buildOption = (
-  method: Method,
-  token: string,
-  body?: unknown
-): RequestInit => {
+export const buildOption = (token: string, method?: Method, body?: unknown) => {
   const options = {
-    headers: buildHeader(method, token),
+    headers: buildHeader(token, method),
     body: JSON.stringify(body),
   };
   return options;
