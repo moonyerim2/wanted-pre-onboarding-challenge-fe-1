@@ -1,8 +1,17 @@
-import React, { useReducer, createContext } from "react";
+import React, {
+  useState,
+  useReducer,
+  createContext,
+  Dispatch,
+  SetStateAction,
+} from "react";
 
-export interface TodoItem {
+export interface TodoTexts {
   title: string;
   content: string;
+}
+
+export interface TodoItem extends TodoTexts {
   id: string;
   createdAt: string;
   updateAt: string;
@@ -14,6 +23,8 @@ interface ContextType {
   addTodo: (newTodoItem: TodoItem) => void;
   deleteTodo: (todoId: string) => void;
   updateTodo: (newTodoItem: TodoItem) => void;
+  todoTexts: TodoTexts;
+  setTodoTexts: Dispatch<SetStateAction<TodoTexts>>;
 }
 
 type ActionType =
@@ -30,6 +41,8 @@ const TodoContext = createContext<ContextType>({
   addTodo: () => null,
   deleteTodo: () => null,
   updateTodo: () => null,
+  todoTexts: { title: "", content: "" },
+  setTodoTexts: () => null,
 });
 
 function todoReducer(
@@ -63,6 +76,7 @@ function todoReducer(
 
 function TodoProvider({ children }: { children: React.ReactNode }) {
   const [todos, dispatch] = useReducer(todoReducer, []);
+  const [todoTexts, setTodoTexts] = useState({ title: "", content: "" });
 
   const setInitialTodos = (todos: TodoItem[]) => {
     dispatch({ type: "SET_INITAIL_DATA", payload: todos });
@@ -85,7 +99,15 @@ function TodoProvider({ children }: { children: React.ReactNode }) {
 
   return (
     <TodoContext.Provider
-      value={{ todos, addTodo, deleteTodo, updateTodo, setInitialTodos }}
+      value={{
+        todos,
+        addTodo,
+        deleteTodo,
+        updateTodo,
+        setInitialTodos,
+        todoTexts,
+        setTodoTexts,
+      }}
     >
       {children}
     </TodoContext.Provider>
