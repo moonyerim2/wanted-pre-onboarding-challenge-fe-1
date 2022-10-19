@@ -1,27 +1,48 @@
-import { useState } from "react";
+import { useContext, useState } from "react";
+import styled from "styled-components";
 import { Button } from "../../styled/button";
 import TextField from "../TextField";
+import { TodoContext } from "../../context";
 import { TodoItem as TodoItemType } from "../../type";
 import { useFetch } from "../../hook";
 import { BASE_URL } from "../../constant";
-import { buildOption } from "../../util";
-import { getLoginToken } from "../../util/login";
+import { buildOption, getLoginToken } from "../../util";
 
 interface TodoItemProps {
   todo: TodoItemType;
 }
 
 function TodoItem({ todo }: TodoItemProps) {
+  const { todoTexts } = useContext(TodoContext);
   const [isEditingMode, setIsEditingMode] = useState(false);
   const { post } = useFetch({ baseUrl: BASE_URL });
 
-  const textFieldProp = {
-    id: "todo-title",
-    label: "todo-title",
+  const TodoItemTitleInputProps = {
+    id: "title",
+    label: "title",
     text: todo.title,
     type: "text",
     placeholder: "",
     required: false,
+  };
+
+  const TodoItemContentInputProps = {
+    id: "content",
+    label: "content",
+    text: todo.content,
+    type: "text",
+    placeholder: "",
+    required: false,
+  };
+
+  const editTodo = (todoId: string) => {
+    if (todoTexts.title === "") return;
+
+    post({
+      endPoint: `/todos/${todoId}`,
+      options: buildOption(getLoginToken(), "PUT", todoTexts),
+    });
+    return;
   };
 
   const onClick = (
@@ -39,21 +60,20 @@ function TodoItem({ todo }: TodoItemProps) {
       setIsEditingMode(false);
       const liElement = target.closest(".todo-item") as HTMLLIElement;
       const todoId = liElement.id;
-
-      post({
-        endPoint: `/todos/${todoId}`,
-        options: buildOption(getLoginToken(), "PUT", {
-          title: "1234",
-          content: "qwer",
-        }),
-      });
-      return;
+      editTodo(todoId);
     }
   };
 
   return (
     <li id={todo.id} className={"todo-item"}>
-      {isEditingMode ? <TextField {...textFieldProp} /> : <p>{todo.title}</p>}
+      {isEditingMode ? (
+        <>
+          <TodoItemTitleInput {...TodoItemTitleInputProps} />
+          <TodoItemContentInput {...TodoItemContentInputProps} />
+        </>
+      ) : (
+        <p>{todo.title}</p>
+      )}
       <Button
         type="submit"
         id={isEditingMode ? "edit-finish" : "edit"}
@@ -68,5 +88,9 @@ function TodoItem({ todo }: TodoItemProps) {
     </li>
   );
 }
+
+const TodoItemTitleInput = styled(TextField)``;
+
+const TodoItemContentInput = styled(TextField)``;
 
 export default TodoItem;

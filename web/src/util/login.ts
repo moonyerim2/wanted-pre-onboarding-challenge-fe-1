@@ -1,4 +1,4 @@
-import { getStorageItem } from ".";
+import { getStorageItem } from "./storage";
 
 export const getLoginToken = (): string => {
   const token = getStorageItem("token");
