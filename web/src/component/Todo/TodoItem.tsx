@@ -1,21 +1,18 @@
 import { useContext, useState } from "react";
 import styled from "styled-components";
-import { Button } from "../../styled/button";
 import TextField from "../TextField";
+import TodoItemButtons from "./TodoItemButtons";
 import { TodoContext } from "../../context";
 import { TodoItem as TodoItemType } from "../../type";
-import { useFetch } from "../../hook";
-import { BASE_URL } from "../../constant";
-import { buildOption, getLoginToken } from "../../util";
 
 interface TodoItemProps {
   todo: TodoItemType;
 }
 
 function TodoItem({ todo }: TodoItemProps) {
-  const { todoTexts, setTodoTexts } = useContext(TodoContext);
+  const { setTodoTexts } = useContext(TodoContext);
   const [isEditingMode, setIsEditingMode] = useState(false);
-  const { post } = useFetch({ baseUrl: BASE_URL });
+  const [hasNoTitle, setHasNoTitle] = useState(false);
 
   const TodoItemTitleInputProps = {
     id: "title",
@@ -35,45 +32,9 @@ function TodoItem({ todo }: TodoItemProps) {
     required: false,
   };
 
-  const editTodo = (todoId: string) => {
-    if (todoTexts.title === "") return;
-
-    post({
-      endPoint: `/todos/${todoId}`,
-      options: buildOption(getLoginToken(), "PUT", todoTexts),
-    });
-    return;
-  };
-
-  const deleteTodo = (todoId: string) => {
-    post({
-      endPoint: `/todos/${todoId}`,
-      options: buildOption(getLoginToken(), "DELETE"),
-    });
-    return;
-  };
-
-  const onClick = (
-    e:
-      | React.MouseEvent<HTMLButtonElement>
-      | React.KeyboardEvent<HTMLButtonElement>
-  ) => {
-    const target = e.target as HTMLButtonElement;
-    const liElement = target.closest(".todo-item") as HTMLLIElement;
-    const todoId = liElement.id;
-
-    if (target.id === "edit") {
-      setIsEditingMode(true);
-      setTodoTexts({ title: todo.title, content: todo.content });
-      return;
-    }
-
-    if (target.id === "edit-finish") {
-      editTodo(todoId);
-    } else {
-      deleteTodo(todoId);
-    }
-    setIsEditingMode(false);
+  const activeEditingMode = () => {
+    setIsEditingMode(true);
+    setTodoTexts({ title: todo.title, content: todo.content });
   };
 
   return (
@@ -81,22 +42,22 @@ function TodoItem({ todo }: TodoItemProps) {
       {isEditingMode ? (
         <>
           <TodoItemTitleInput {...TodoItemTitleInputProps} />
+          <TitleInputErrorMessage hasNoTitle={hasNoTitle}>
+            제목을 입력해주세요.
+          </TitleInputErrorMessage>
           <TodoItemContentInput {...TodoItemContentInputProps} />
         </>
       ) : (
         <p>{todo.title}</p>
       )}
-      <Button
-        type="submit"
-        id={isEditingMode ? "edit-finish" : "edit"}
-        onClick={onClick}
-        onKeyDown={onClick}
-      >
-        {isEditingMode ? "수정완료" : "수정하기"}
-      </Button>
-      <Button type="submit" id={"delete"} onClick={onClick} onKeyDown={onClick}>
-        삭제하기
-      </Button>
+      <TodoItemButtons
+        isEditingMode={isEditingMode}
+        activeEditingMode={activeEditingMode}
+        setStateAction={{
+          setHasNoTitle,
+          setIsEditingMode,
+        }}
+      />
     </li>
   );
 }
@@ -104,5 +65,11 @@ function TodoItem({ todo }: TodoItemProps) {
 const TodoItemTitleInput = styled(TextField)``;
 
 const TodoItemContentInput = styled(TextField)``;
+
+const TitleInputErrorMessage = styled.p<{ hasNoTitle: boolean }>`
+  visibility: ${({ hasNoTitle }) => (hasNoTitle ? "visible" : "hidden")};
+  font-size: 12px;
+  color: red;
+`;
 
 export default TodoItem;
