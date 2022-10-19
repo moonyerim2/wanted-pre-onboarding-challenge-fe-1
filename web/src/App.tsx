@@ -1,6 +1,6 @@
 import React from "react";
 import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
-import { TodoList, Auth, Login, SignUp } from "./page";
+import { Todo, Auth, Login, SignUp } from "./page";
 import { getLoginToken } from "./util/login";
 
 function App() {
@@ -11,7 +11,7 @@ function App() {
       <Routes>
         <Route
           path="/"
-          element={isLogin ? <TodoList /> : <Navigate to="auth/login" />}
+          element={isLogin ? <Todo /> : <Navigate to="auth/login" />}
         />
         <Route path="auth" element={<Auth />}>
           <Route path="login" element={<Login />} />
