@@ -6,8 +6,7 @@ import { TextFieldData } from "../../type";
 import { TodoContext } from "../../context";
 import { useFetch } from "../../hook";
 import { BASE_URL } from "../../constant";
-import { getLoginToken } from "../../util/login";
-import { buildOption } from "../../util";
+import { buildOption, getLoginToken } from "../../util";
 
 const todoTitleProps: TextFieldData = {
   id: "title",
