@@ -13,7 +13,7 @@ interface TodoItemProps {
 }
 
 function TodoItem({ todo }: TodoItemProps) {
-  const { todoTexts } = useContext(TodoContext);
+  const { todoTexts, setTodoTexts } = useContext(TodoContext);
   const [isEditingMode, setIsEditingMode] = useState(false);
   const { post } = useFetch({ baseUrl: BASE_URL });
 
@@ -45,23 +45,35 @@ function TodoItem({ todo }: TodoItemProps) {
     return;
   };
 
+  const deleteTodo = (todoId: string) => {
+    post({
+      endPoint: `/todos/${todoId}`,
+      options: buildOption(getLoginToken(), "DELETE"),
+    });
+    return;
+  };
+
   const onClick = (
     e:
       | React.MouseEvent<HTMLButtonElement>
       | React.KeyboardEvent<HTMLButtonElement>
   ) => {
     const target = e.target as HTMLButtonElement;
+    const liElement = target.closest(".todo-item") as HTMLLIElement;
+    const todoId = liElement.id;
+
     if (target.id === "edit") {
       setIsEditingMode(true);
+      setTodoTexts({ title: todo.title, content: todo.content });
       return;
     }
 
     if (target.id === "edit-finish") {
-      setIsEditingMode(false);
-      const liElement = target.closest(".todo-item") as HTMLLIElement;
-      const todoId = liElement.id;
       editTodo(todoId);
+    } else {
+      deleteTodo(todoId);
     }
+    setIsEditingMode(false);
   };
 
   return (
