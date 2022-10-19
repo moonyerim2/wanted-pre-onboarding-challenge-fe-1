@@ -5,17 +5,14 @@ import { TodoContext } from "../../context";
 import { useFetch } from "../../hook";
 import { BASE_URL } from "../../constant";
 import { getLoginToken } from "../../util/login";
+import { buildOption } from "../../util";
 
 function TodoList() {
   const { todos, setInitialTodos } = useContext(TodoContext);
   const { loading, responseData } = useFetch({
     baseUrl: BASE_URL,
     endPoint: "/todos",
-    options: {
-      headers: {
-        Authorization: getLoginToken(),
-      },
-    },
+    options: buildOption("GET", getLoginToken()),
   });
 
   useEffect(() => {

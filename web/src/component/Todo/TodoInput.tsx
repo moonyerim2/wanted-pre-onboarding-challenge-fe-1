@@ -7,6 +7,7 @@ import { TodoContext } from "../../context";
 import { useFetch } from "../../hook";
 import { BASE_URL } from "../../constant";
 import { getLoginToken } from "../../util/login";
+import { buildOption } from "../../util";
 
 const todoTitleProps: TextFieldData = {
   id: "title",
@@ -32,12 +33,7 @@ function TodoInput() {
 
   const onSubmit = (e: React.FormEvent<HTMLButtonElement>) => {
     e.preventDefault();
-    const options = {
-      headers: {
-        Authorization: getLoginToken(),
-      },
-      body: JSON.stringify(todoTexts),
-    };
+    const options = buildOption("POST", getLoginToken(), todoTexts);
     const data = post({ endPoint: "/todos", options });
     addTodo(data);
   };
