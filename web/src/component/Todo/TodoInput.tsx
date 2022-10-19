@@ -30,10 +30,10 @@ function TodoInput() {
   const { addTodo, todoTexts } = useContext(TodoContext);
   const { post } = useFetch({ baseUrl: BASE_URL });
 
-  const onSubmit = (e: React.FormEvent<HTMLButtonElement>) => {
+  const onSubmit = async (e: React.FormEvent<HTMLButtonElement>) => {
     e.preventDefault();
     const options = buildOption(getLoginToken(), "POST", todoTexts);
-    const data = post({ endPoint: "/todos", options });
+    const data = await post({ endPoint: "/todos", options });
     addTodo(data);
   };
 
