@@ -19,18 +19,18 @@ function TodoItemButtons({
   isEditingMode,
   setStateAction,
 }: TodoItemButtonsProps) {
-  const { todoTexts } = useContext(TodoContext);
+  const { todoTexts, updateTodo, deleteTodo } = useContext(TodoContext);
   const { post } = useFetch({ baseUrl: BASE_URL });
 
-  const RequestUpdateTodo = (todoId: string) => {
-    post({
+  const RequestUpdateTodo = async (todoId: string) => {
+    const data = await post({
       endPoint: `/todos/${todoId}`,
       options: buildOption(getLoginToken(), "PUT", todoTexts),
     });
-    return;
+    return data;
   };
 
-  const RequestDeleteTodo = (todoId: string) => {
+  const RequestDeleteTodo = async (todoId: string) => {
     post({
       endPoint: `/todos/${todoId}`,
       options: buildOption(getLoginToken(), "DELETE"),
@@ -38,7 +38,7 @@ function TodoItemButtons({
     return;
   };
 
-  const onClick = (
+  const onClick = async (
     e:
       | React.MouseEvent<HTMLButtonElement>
       | React.KeyboardEvent<HTMLButtonElement>
@@ -57,11 +57,13 @@ function TodoItemButtons({
         setStateAction.setHasNoTitle(true);
         return;
       }
-      RequestUpdateTodo(todoId);
+      const newTodoItem = await RequestUpdateTodo(todoId);
+      updateTodo(newTodoItem);
       setStateAction.setIsEditingMode(false);
       setStateAction.setHasNoTitle(false);
     } else {
       RequestDeleteTodo(todoId);
+      deleteTodo(todoId);
     }
   };
 

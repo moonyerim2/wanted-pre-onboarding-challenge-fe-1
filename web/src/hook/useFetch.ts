@@ -5,26 +5,32 @@ export function useFetch({ baseUrl, options, endPoint }: UseFetchParams) {
   const [responseData, setResponseData] = useState<any>();
   const [loading, setLoading] = useState(false);
 
-  const fetchData = (url: string, method: string, options?: RequestInit) => {
+  const fetchData = async (
+    url: string,
+    method: string,
+    options?: RequestInit
+  ) => {
     try {
       setLoading(true);
 
-      setTimeout(async () => {
-        const response = options
-          ? await fetch(url, { ...options, method })
-          : await fetch(url);
-        const { data } = await response.json();
-        setResponseData(data);
-        setLoading(false);
-      }, 2000);
+      //setTimeout(async () => {
+      const response = options
+        ? await fetch(url, { ...options, method })
+        : await fetch(url);
+      const { data } = await response.json();
+      setResponseData(data);
+      setLoading(false);
+      return data;
+      //}, 2000);
     } catch (err) {
       console.error(err);
+      return null;
     }
   };
 
   const createUrl = (endPoint: string) => `${baseUrl}${endPoint}`;
 
-  const post = ({ endPoint, options }: PostParams) => {
+  const post = async ({ endPoint, options }: PostParams) => {
     const { headers } = options;
     const { method }: { method: Method } = headers;
 
@@ -32,19 +38,17 @@ export function useFetch({ baseUrl, options, endPoint }: UseFetchParams) {
       throw "HTTP method를 입력하세요.";
     }
     const url = createUrl(endPoint);
-    fetchData(url, method, options);
-    return responseData;
+    const data = await fetchData(url, method, options);
+    return data;
   };
 
-  const get = ({ endPoint, options }: GetParams) => {
+  const get = async ({ endPoint, options }: GetParams) => {
     const method = "GET";
     const url = createUrl(endPoint);
-    if (options) {
-      fetchData(url, method, options);
-    } else {
-      fetchData(url, method);
-    }
-    return responseData;
+    const data = options
+      ? await fetchData(url, method, options)
+      : await fetchData(url, method);
+    return data;
   };
 
   useEffect(() => {
