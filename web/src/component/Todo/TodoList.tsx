@@ -1,5 +1,6 @@
 import { useContext, useEffect } from "react";
 import TodoInput from "./TodoInput";
+import TodoItem from "./TodoItem";
 import { TodoContext } from "../../context";
 import { useFetch } from "../../hook";
 import { BASE_URL } from "../../constant";
@@ -23,16 +24,18 @@ function TodoList() {
     } else {
       setInitialTodos(responseData);
     }
-  }, []);
+  }, [responseData, setInitialTodos]);
 
   return (
     <>
       <TodoInput />
-      <div>
+      <ul>
         {loading
           ? "로딩중"
-          : todos.map((todo) => (todo ? <div>{todo.title}</div> : null))}
-      </div>
+          : todos.map((todo) =>
+              todo ? <TodoItem key={todo.id} todo={todo} /> : null
+            )}
+      </ul>
     </>
   );
 }
