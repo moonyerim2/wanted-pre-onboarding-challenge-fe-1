@@ -1,31 +1,5 @@
-import React, {
-  useState,
-  useReducer,
-  createContext,
-  Dispatch,
-  SetStateAction,
-} from "react";
-
-export interface TodoTexts {
-  title: string;
-  content: string;
-}
-
-export interface TodoItem extends TodoTexts {
-  id: string;
-  createdAt: string;
-  updateAt: string;
-}
-
-interface ContextType {
-  todos: TodoItem[];
-  setInitialTodos: (todos: TodoItem[]) => void;
-  addTodo: (newTodoItem: TodoItem) => void;
-  deleteTodo: (todoId: string) => void;
-  updateTodo: (newTodoItem: TodoItem) => void;
-  todoTexts: TodoTexts;
-  setTodoTexts: Dispatch<SetStateAction<TodoTexts>>;
-}
+import React, { useState, useReducer, createContext } from "react";
+import { ContextType, TodoItem } from "../type";
 
 type ActionType =
   | { type: "SET_INITAIL_DATA"; payload: TodoItem[] }
