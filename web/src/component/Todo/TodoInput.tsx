@@ -1,6 +1,7 @@
 import { useContext } from "react";
 import styled from "styled-components";
 import TextField from "../TextField";
+import { Button } from "../../styled/button";
 import { TextFieldData } from "../../type";
 import { TodoContext } from "../../context";
 import { useFetch } from "../../hook";
@@ -45,9 +46,9 @@ function TodoInput() {
     <form>
       <TodoTitle {...todoTitleProps} />
       <TodoContent {...todoContentProps} />
-      <TodoAddButton type="submit" onClick={onSubmit}>
+      <Button type="submit" onClick={onSubmit}>
         추가
-      </TodoAddButton>
+      </Button>
     </form>
   );
 }
@@ -55,9 +56,5 @@ function TodoInput() {
 const TodoTitle = styled(TextField)``;
 
 const TodoContent = styled(TextField)``;
-
-const TodoAddButton = styled.button`
-  padding: 10px 30px;
-`;
 
 export default TodoInput;
