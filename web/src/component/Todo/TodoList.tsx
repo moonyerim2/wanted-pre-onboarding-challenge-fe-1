@@ -6,7 +6,7 @@ import { BASE_URL } from "../../constant";
 import { getLoginToken } from "../../util/login";
 
 function TodoList() {
-  const { setInitialTodos } = useContext(TodoContext);
+  const { todos, setInitialTodos } = useContext(TodoContext);
   const { loading, responseData } = useFetch({
     baseUrl: BASE_URL,
     endPoint: "/todos",
@@ -28,7 +28,11 @@ function TodoList() {
   return (
     <>
       <TodoInput />
-      <div>{loading ? "로딩중" : "투두리스트"}</div>
+      <div>
+        {loading
+          ? "로딩중"
+          : todos.map((todo) => (todo ? <div>{todo.title}</div> : null))}
+      </div>
     </>
   );
 }
