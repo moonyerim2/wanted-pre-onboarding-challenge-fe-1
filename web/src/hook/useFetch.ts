@@ -57,5 +57,5 @@ export function useFetch({ baseUrl, options, endPoint }: UseFetchParams) {
     }
   }, []);
 
-  return { loading, responseData, post, get };
+  return { loading, data: responseData, post, get };
 }
