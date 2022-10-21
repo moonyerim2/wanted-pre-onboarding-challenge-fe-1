@@ -8,19 +8,19 @@ import { buildOption, getLoginToken } from "../../util";
 
 function TodoList() {
   const { todos, setInitialTodos } = useContext(TodoContext);
-  const { loading, responseData } = useFetch({
+  const { loading, data } = useFetch({
     baseUrl: BASE_URL,
     endPoint: "/todos",
     options: buildOption(getLoginToken()),
   });
 
   useEffect(() => {
-    if (responseData === undefined) {
+    if (data === undefined) {
       setInitialTodos([]);
     } else {
-      setInitialTodos(responseData);
+      setInitialTodos(data);
     }
-  }, [responseData]);
+  }, [data]);
 
   return (
     <>
